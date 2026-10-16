@@ -1,0 +1,4 @@
+name: MaxEnchantVillager
+version: 1.0
+main: com.example.maxenchantvillager.MaxEnchantVillagerPlugin
+api-version: '1.20'
