@@ -1,0 +1,8 @@
+main: ca.zacksmith.villagerRework.villagerRework
+version: 1.0.0-SNAPSHOT
+name: villagerRework
+author: Blasterbob204
+description: Rework villagers for faster smoother progression on competitive smps
+api-version: 1.21
+
+
