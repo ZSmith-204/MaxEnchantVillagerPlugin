@@ -51,7 +51,7 @@ public final class villagerRework extends JavaPlugin implements Listener {
         
         if (meta != null) {
             meta.setDisplayName(ChatColor.GOLD + "Master Librarian Spawn Egg");
-            meta.setLore(Collections.singletonList(ChatColor.YELLOW + "Spawns a custom Librarian with maxed books & boosted attributes!"));
+            meta.setLore(Collections.singletonList(ChatColor.YELLOW + "Spawns a custom Librarian with maxed books (KB1) & boosted attributes!"));
             meta.getPersistentDataContainer().set(CUSTOM_EGG_KEY, PersistentDataType.BYTE, (byte) 1);
             egg.setItemMeta(meta);
         }
@@ -81,7 +81,6 @@ public final class villagerRework extends JavaPlugin implements Listener {
         Byte isCustom = meta.getPersistentDataContainer().get(CUSTOM_EGG_KEY, PersistentDataType.BYTE);
         if (isCustom == null || isCustom != 1) return;
 
-        // Prevent standard spawn and handle it customly to ensure tag verification works
         event.setCancelled(true);
 
         if (event.getPlayer().getGameMode() != GameMode.CREATIVE) {
@@ -106,7 +105,6 @@ public final class villagerRework extends JavaPlugin implements Listener {
         villager.setCustomName(ChatColor.LIGHT_PURPLE + "Master Librarian");
         villager.setCustomNameVisible(true);
 
-        // Modern attribute assignment (Paper 1.21+ style without GENERIC_ prefix)
         AttributeInstance healthAttr = villager.getAttribute(Attribute.MAX_HEALTH);
         if (healthAttr != null) {
             healthAttr.setBaseValue(40.0);
@@ -118,15 +116,19 @@ public final class villagerRework extends JavaPlugin implements Listener {
             speedAttr.setBaseValue(0.3);
         }
 
-        // Generate all max-level enchantment trades for 10 emeralds
         List<MerchantRecipe> trades = new ArrayList<>();
         for (Enchantment enchantment : Registry.ENCHANTMENT) {
-            int maxLevel = enchantment.getMaxLevel();
+            int level = enchantment.getMaxLevel();
+
+            // Override Knockback to level 1 instead of its max level (2)
+            if (enchantment.getKey().getKey().equalsIgnoreCase("knockback")) {
+                level = 1;
+            }
 
             ItemStack book = new ItemStack(Material.ENCHANTED_BOOK);
             EnchantmentStorageMeta meta = (EnchantmentStorageMeta) book.getItemMeta();
             if (meta != null) {
-                meta.addStoredEnchant(enchantment, maxLevel, true);
+                meta.addStoredEnchant(enchantment, level, true);
                 book.setItemMeta(meta);
             }
 
